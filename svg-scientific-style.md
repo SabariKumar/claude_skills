@@ -51,17 +51,17 @@ familiarity with concepts like graph neural networks and transfer learning, but
 not with specific implementation choices.
 
 **Canvas**: A4 landscape preferred (297×210 mm, `viewBox="0 0 297 210"`), or
-wider if the pipeline is long. Two-lane horizontal layout (pretraining top,
-finetuning bottom) is the standard pattern.
+wider if the pipeline is long. Two-lane horizontal layout (encoding top,
+decoding/finetuning bottom) is the standard pattern.
 
 **What to include**:
 - Named pipeline stages as labelled boxes or dataset icons
 - Data types flowing between stages (e.g. "SMILES CSV", "mol. graph", "latent z")
 - Conceptual operation labels inside boxes (e.g. "Graph Transformer", "Task Head")
-- Loss function names (e.g. "ℒ = MSE") — no equations, just the form
+- Loss equations in italic below decoder boxes (e.g. `ℒ_geo = MSE(dist_pred, dist_true)`) — full form is fine
 - Arrows indicating data flow direction; dashed arrows for optional/cached flows
-- A legend if more than two arrow styles or fill colors are used
-- Section swim-lane labels ("Pretraining", "Finetuning")
+- Section swim-lane labels, but **only for lanes that benefit from a bounding box** (see below)
+- Small source/script annotations in `Courier New` above dataset icons where useful (e.g. `confsweeper`)
 
 **What to omit**:
 - Layer counts, hidden dimensions, head counts
@@ -71,12 +71,60 @@ finetuning bottom) is the standard pattern.
 - Optimizer settings, warmup schedules
 - Internal sub-block structure within a model stage
 
-**Box labels**: short noun phrases, 1–2 lines max. E.g. "Graph Transformer",
-"Isoform Enumeration", "Task Head". Sub-labels allowed for data type hints
-(e.g. "attention · PNA aggregation") but keep to one line.
+**Swim-lane bounding boxes**: use sparingly. The encoding pipeline at the top
+often looks cleaner without a background rect — let the boxes and arrows speak
+for themselves. Reserve the `fill="#f2f2f2"` panel for lanes that group
+multiple parallel sub-heads (e.g. a curriculum decoder section with three
+parallel branches). When a lane panel is used, keep `fill-opacity: 0.47`,
+`stroke="#b7b7b7"`, `stroke-width: 0.2`, `stroke-opacity: 0.73`.
 
-**Font sizes**: primary box labels `3.5–4px`; sub-labels and annotations
-`2.5–3px`; lane headings `4.5px` bold.
+**Phase sub-panels**: when a decoder lane has discrete curriculum phases, shade
+each phase column with a distinct very-light pastel background rect
+(`fill-opacity: 0.55`, `stroke-width: 0.13`). Phase label sits at the left
+edge of each column (`text-anchor="middle"` over the column centre), bold,
+coloured to match its phase tint. Phase colours:
+- Phase 1: fill `#e8f5e9`, stroke `#b2dfb2`, label `#2d7a4f`
+- Phase 2: fill `#e3eef9`, stroke `#b2c8e8`, label `#3d6fa6`
+- Phase 3: fill `#f3e8f7`, stroke `#d4b8e4`, label `#7a4a8c`
+
+**Dataset icons**: always use the canonical stacked-disc icon from `Database.svg`
+(see Dataset / CSV icons section). Never use a plain rect or a hand-drawn
+ellipse/rect cylinder. Scale: `~0.475` for primary input datasets (~13 mm tall),
+`~0.34` for secondary cache icons (~9 mm tall). Fill colour encodes data role —
+extend the table in the Dataset section as needed; two confirmed additions:
+- Raw/unlabelled input dataset: `#ffaaaa` (pink-red, full opacity)
+- Precomputed geometric cache: `#f6ffd5` / `#ddffee` (yellow-green to mint)
+
+**Arrow edge labels**: keep to a single short noun phrase on one line (e.g.
+"ensemble", "node emb."). Two stacked lines read as clutter at this scale;
+prefer dropping the second line over using two.
+
+**Loss footer**: place a combined loss equation as a single centred line at the
+bottom of the figure (no horizontal rule separator above it). Use an inline
+`Courier New` `<tspan>` for the mathematical expression itself, leaving the
+surrounding descriptor text in Arial. Example:
+```svg
+<text font-family="Arial" font-size="2.8" fill="#555555" text-anchor="middle">
+  <tspan font-family="Courier New">train/loss = Σᵢ λᵢ · ℒᵢ / EMAᵢ</tspan>
+  (per-head EMA normalisation keeps contributions comparable)
+</text>
+```
+
+**Font sizes**: primary box labels `3.8px` bold; sub-labels `2.8px`; tertiary
+detail `2.5px` in `#666666`; annotations and cache labels `2.2–2.5px`;
+lane headings `3.8px` bold in `#444444`; phase labels `3.5px` bold.
+
+**Compactness**: figures should be tightly laid out with minimal whitespace.
+Concretely:
+- Fit content to the canvas — do not pad the viewBox to a round number if
+  the content only fills half of it. Crop the viewBox height to the actual
+  content extent plus ~5 mm margin.
+- Inter-box gaps: 7–10 mm between horizontally adjacent boxes; 6–8 mm
+  between a box and its downstream arrow target.
+- Vertical lane padding: 3–4 mm between the lane border and the nearest box.
+- Avoid blank rows or columns. If a lane is mostly empty, shrink it or remove it.
+- Do not add a legend unless the figure actually uses more than two distinct
+  arrow or fill conventions that would otherwise be ambiguous.
 
 ---
 
@@ -462,30 +510,47 @@ Used in hypergraph message-passing figures to delineate fragments.
 
 ## Arrows and Connectors
 
+**Always use `<path>` for arrows** — never `<line>`. Path objects have
+editable start and end nodes in Inkscape and carry `sodipodi:nodetypes`
+metadata, which makes post-generation editing much easier. Even straight
+arrows must be written as paths:
+
+```svg
+<!-- Straight arrow — use path, not line -->
+<path d="M X1,Y1 L X2,Y2"
+      stroke="#999999" stroke-width="0.5" stroke-linecap="round"
+      fill="none" marker-end="url(#Triangle)"/>
+
+<!-- Curved arrow — cubic bezier, nodetypes csc -->
+<path d="M X1,Y1 C CX1,CY1 CX2,CY2 X2,Y2"
+      sodipodi:nodetypes="csc"
+      stroke="#999999" stroke-width="0.5" stroke-linecap="round"
+      fill="none" marker-end="url(#Triangle)"/>
+```
+
 ### Standard flowchart arrows
 
 ```svg
-<path stroke="#999999" stroke-width="0.324"
-      stroke-linecap="round"
-      marker-end="url(#Triangle)" fill="none" />
+<path d="M X1,Y1 L X2,Y2"
+      stroke="#999999" stroke-width="0.5" stroke-linecap="round"
+      fill="none" marker-end="url(#Triangle)"/>
 ```
 
-Marker: `#Triangle` (filled triangle, `markerWidth="1"`, `scale(0.5)`)
+Stroke width `0.5` for main flow arrows; `0.37–0.43` for drop arrows
+inside branching trees (scale with visual weight of the branch).
 
 ### Dashed / data-flow arrows
 
 ```svg
-<line stroke="#666666" stroke-width="0.938"
-      stroke-dasharray="none"
-      marker-end="url(#Triangle)" fill="none" />
-<!-- or -->
-<path stroke="#888060" stroke-width="0.6"
-      stroke-dasharray="3 2"
-      marker-end="url(#arrow)" fill="none" />
+<path d="M X1,Y1 L X2,Y2"
+      stroke="#888060" stroke-width="0.5"
+      stroke-dasharray="2 1.5" stroke-linecap="round"
+      fill="none" marker-end="url(#Triangle)"/>
 ```
 
-Sage-colored (`#888060`) for data input connections; gray (`#666666`) for
-standard flow.
+Sage-colored (`#888060`) for cached / precomputed data dependencies;
+gray (`#999999`) for standard flow. `stroke-dasharray="2 1.5"` is the
+preferred dash rhythm (matches hand-edited figures).
 
 ### Message-passing arrows (bidirectional, curved)
 
@@ -606,8 +671,15 @@ Never use a plain rect for dataset nodes. Wrap and position with:
       stroke-opacity="0.72549" rx="1.35" />
 ```
 
-### Dashed annotation arrow
+### Arrows (all types — always `<path>`, never `<line>`)
 ```svg
-<path stroke="#888060" stroke-width="0.6" stroke-dasharray="3 2"
-      fill="none" marker-end="url(#Triangle)" />
+<!-- Straight flow arrow -->
+<path d="M X1,Y1 L X2,Y2"
+      stroke="#999999" stroke-width="0.5" stroke-linecap="round"
+      fill="none" marker-end="url(#Triangle)"/>
+
+<!-- Dashed dependency / cache arrow -->
+<path d="M X1,Y1 L X2,Y2"
+      stroke="#888060" stroke-width="0.5" stroke-dasharray="2 1.5"
+      stroke-linecap="round" fill="none" marker-end="url(#Triangle)"/>
 ```
