@@ -12,7 +12,8 @@ description: >
   flow for a computational chemistry audience, no hyperparameters) and
   "detailed" (architecture reference with layer counts, dimensions, and training
   config, for readers working on the code). Always read this skill before
-  writing any SVG code, and determine the detail level before drawing.
+  writing any SVG code, and determine the detail level and orientation
+  before drawing. Default orientation is horizontal landscape.
 ---
 
 # SVG Scientific Diagram Style Guide
