@@ -57,6 +57,67 @@ The `description` field drives automatic triggering — it should list represent
 
 ---
 
+## Installation
+
+Claude Code loads user skills from `~/.claude/skills/`. Each skill must be a subdirectory named after the skill, containing a file named `SKILL.md`. The files in this repo use descriptive filenames for version control; the install step renames them.
+
+### Mac (local machine)
+
+```bash
+# Clone or pull the repo
+git clone <repo-url> ~/Documents/Projects/claude_skills
+cd ~/Documents/Projects/claude_skills
+
+# Create the skills directory if it doesn't exist
+mkdir -p ~/.claude/skills
+
+# Install each skill as a subdirectory
+for skill in avoid-ai-writing document-code svg-scientific-style; do
+  mkdir -p ~/.claude/skills/$skill
+  cp ${skill}.md ~/.claude/skills/$skill/SKILL.md
+done
+```
+
+Restart Claude Code (or reload the window in VS Code) after installing. Skills take effect immediately in new sessions.
+
+### Linux remote machine (VS Code Remote Development)
+
+The VS Code Remote Development extension runs the Claude Code extension process on the remote host, so skills must be installed on the remote machine's filesystem — not your local Mac.
+
+**Option A — clone the repo directly on the remote machine** (recommended if you have internet access there):
+
+```bash
+# On the remote machine
+git clone <repo-url> ~/claude_skills
+cd ~/claude_skills
+
+mkdir -p ~/.claude/skills
+for skill in avoid-ai-writing document-code svg-scientific-style; do
+  mkdir -p ~/.claude/skills/$skill
+  cp ${skill}.md ~/.claude/skills/$skill/SKILL.md
+done
+```
+
+**Option B — transfer from your Mac with `rsync`**:
+
+```bash
+# Run this on your Mac
+# First, install locally so you can rsync the structured layout
+for skill in avoid-ai-writing document-code svg-scientific-style; do
+  mkdir -p ~/.claude/skills/$skill
+  cp ${skill}.md ~/.claude/skills/$skill/SKILL.md
+done
+
+# Then push the skills directory to the remote machine
+rsync -av ~/.claude/skills/ <user>@<remote-host>:~/.claude/skills/
+```
+
+### Keeping skills up to date
+
+When skill files change in this repo, re-run the copy loop for the skills that changed, then reload the VS Code window (`Cmd+Shift+P` → `Developer: Reload Window`) so Claude Code picks up the new content.
+
+---
+
 ## Dependencies
 
 These skills are self-contained markdown documents with no runtime dependencies. The `document-code.md` skill cross-references `svg-scientific-style.md` at generation time (it instructs Claude to read that file before writing SVG code), so both files must be present in the same skill library for diagram generation to work correctly.
