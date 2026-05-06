@@ -115,17 +115,36 @@ surrounding descriptor text in Arial. Example:
 detail `2.5px` in `#666666`; annotations and cache labels `2.2–2.5px`;
 lane headings `3.8px` bold in `#444444`; phase labels `3.5px` bold.
 
+**Orientation by purpose — default horizontal**: prefer horizontal landscape
+layouts as the default, since figures are frequently embedded in slides. Use
+vertical portrait only for standalone architecture deep-dives intended for
+supplementary material or appendices where height is unconstrained.
+
 **Compactness**: figures should be tightly laid out with minimal whitespace.
 Concretely:
 - Fit content to the canvas — do not pad the viewBox to a round number if
-  the content only fills half of it. Crop the viewBox height to the actual
-  content extent plus ~5 mm margin.
+  the content only fills half of it. Crop the viewBox to the actual content
+  extent plus ~2–5 mm margin.
+- For figures that will be embedded at small size, apply an aggressive global
+  scale: wrap all content in a `<g transform="matrix(S,0,0,S,tx,ty)">` and
+  crop the viewBox to `150×38mm` or similar. This is preferred over leaving
+  the original coordinate space with whitespace.
 - Inter-box gaps: 7–10 mm between horizontally adjacent boxes; 6–8 mm
   between a box and its downstream arrow target.
 - Vertical lane padding: 3–4 mm between the lane border and the nearest box.
 - Avoid blank rows or columns. If a lane is mostly empty, shrink it or remove it.
 - Do not add a legend unless the figure actually uses more than two distinct
   arrow or fill conventions that would otherwise be ambiguous.
+
+**Lane labels**: anchor near the left edge of the lane panel rather than the
+centre of the figure. Set `x` to the panel's own horizontal centre, not the
+figure midpoint — these often differ when panels are narrower than the canvas.
+
+**Dim annotations as floated italic text**: floating dimension labels (e.g.
+`"300-dim"`, `"768-dim"`) positioned just outside the right edge of a lane at
+mid-height of the last box. Use `font-size: 2.0px`, `fill="#888888"`,
+`font-style="italic"`. Use in both overview and detailed figures when the
+dimension is meaningful to the reader.
 
 ---
 
@@ -168,6 +187,149 @@ training config annotation text `2.5px`; section labels `3.2px` bold.
       fill="#555555" text-anchor="middle">Training</text>
 <!-- one line per key hyperparameter, font-size 2.5, fill #888888 -->
 ```
+
+**Training config condensed form** (preferred when horizontal space allows):
+collapse all parameters into a single dense line inside a shallow bordered
+rect (`height ≈ 8mm`). Use ` , ` between related params and ` | ` between
+groups:
+```svg
+<rect fill="none" stroke="#cccccc" stroke-width="0.19" rx="2.5" height="7.8" .../>
+<text font-family="Arial" font-size="2.2" fill="#888888" text-anchor="middle">
+  AdamW , lr = 1×10⁻³ , wd = 10⁻⁴ , cosine LR , clip = 1.0 | batch = 64 | max epochs = 100
+</text>
+```
+
+---
+
+## Detailed Layout Rules
+
+These rules apply to `detailed` figures and are derived from hand-edited
+reference figures.
+
+**Box width consistency**: all boxes within a lane share the same width.
+Prefer ~24mm for horizontal pipeline figures. In vertical portrait layouts,
+boxes span most of the canvas width (~96–108mm for a 150mm-wide canvas,
+leaving ~14–18mm total horizontal margin).
+
+**Lane background width**: lane `<rect>` panels span only the shared/backbone
+portion of the pipeline (input → backbone → pooling). Task-specific heads and
+output boxes float outside the lane panel. Do not extend the lane rect to the
+full figure width.
+
+**Phase / lane label format**: `"Phase N - Description"` (hyphen, single
+spaces). Colour-code to the phase's fill scheme: Phase 1 blue `#3d5a8a`,
+Phase 2 warm orange `#c09070`. Anchor near the left edge of the lane panel,
+not the figure centre.
+
+**Layer-count annotations**:
+- *Horizontal landscape*: plain `×N` tspan (`font-size: 3.175px`, bold,
+  `text-anchor="start"`) at the top-right corner of the block panel.
+- *Vertical portrait*: draw a bracket using three `<path>` segments (vertical
+  dashed line + two horizontal ticks, `stroke="#3d5a8a"`, `stroke-width="0.35"`,
+  `stroke-dasharray="1.5,0.8"`) to the right of the panel, with a large bold
+  `×N` label (`font-size: 4.5px`, `fill="#3d5a8a"`).
+
+**Checkpoint box**: split label across two `<tspan sodipodi:role="line">` lines
+(`"Phase N checkpoint"` / `"best val_loss"`). Omit function-call detail lines.
+Height ~10mm. In architecture diagrams (as opposed to pipeline diagrams), replace
+the checkpoint box with a `swap_head()` italic annotation (`fill="#cc8844"`) on
+the fork arrow.
+
+**Label style — noun-first**: use noun-first box labels (`"SMILES Tokenizer"`
+not `"Tokenize SMILES"`).
+
+**Redundancy avoidance**: do not repeat information already in the lane label
+inside box sub-labels. If the lane is labelled `"(frozen)"`, omit `"frozen ·"`
+from the encoder sub-label.
+
+**Feature dimension notation**: prefer spelled-out forms (`"Node emb [72];
+Edge emb [14]"`) over mathematical notation (`"V∈ℝ⁷² · E∈ℝ¹⁴"`) for feature
+dimension sub-labels.
+
+**Layer count in sub-labels**: do not pack `"×N layers"` into box sub-labels.
+Use a floating annotation instead (see layer-count annotation rule above).
+
+**MLP layer row highlights**: for sequential layer lists inside a box (e.g. a
+Fusion MLP), optionally wrap each row in a thin hairline `<rect>`
+(`fill="none"`, `stroke="#999999"`, `stroke-width≈0.19`, `rx≈0.6`) to
+visually separate the layers. **Always calculate the container box height
+explicitly** — never estimate it:
+
+```
+box_height = title_area + top_pad + (n_rows × row_height) + bottom_pad
+```
+
+Where:
+- `title_area` ≈ 6–7mm (bold title label + gap below it)
+- `top_pad` ≈ 1mm between title area bottom and first row rect
+- `row_height` ≈ 5mm per row (4mm rect height + 1mm gap)
+- `bottom_pad` ≈ 1mm below last row rect
+
+Example for 4 rows: `7 + 1 + (4 × 5) + 1 = 33mm`. Set this as the box
+`height` attribute before placing any row rects. If the box overflows its
+lane panel, also expand the lane panel height to match.
+
+**Concat box label**: use `"Concat"` as the primary bold label, with
+`[h_g ‖ h_lm]` and the output dimension as sub-labels. Do not use `"cat"`.
+
+**Output box sub-labels**: combine where possible — `"scalar output"` on one
+line rather than `"scalar"` and `"output"` on separate lines.
+
+**Horizontal spine alignment**: in horizontal layouts, every connected
+component of the data flow graph shares a single horizontal spine — a common
+y-coordinate that all arrows in that component travel along, and on which all
+boxes in that component are vertically centred. This applies within a lane and
+across lanes that merge or fork.
+
+Rules:
+- **Single-lane components**: all boxes in a lane are centred on the same y.
+  Arrows between them travel at that y. Sub-labels below the centre line are
+  fine; they do not affect the spine.
+- **Merging components** (two lanes converging to a single box): the spine of
+  the merged component is set by the *incoming* connector arrow — not by the
+  box's own geometric centre. Once the concat/merge arrow y is fixed, centre
+  all downstream boxes (concat, MLP, output) on that y:
+  ```
+  merged_spine_y  = concat_arrow_y          # fixed first
+  mlp_box_y       = merged_spine_y - mlp_height / 2
+  output_box_y    = merged_spine_y - output_height / 2
+  mlp_out_arrow_y = merged_spine_y
+  ```
+- **Forking components** (one source splitting to two lanes): the fork origin
+  sits at the midpoint between the two lane spines:
+  ```
+  fork_y = (lane1_spine_y + lane2_spine_y) / 2
+  ```
+  The source box is centred on `fork_y`. Both fork arms travel from `fork_y`
+  to their respective lane spines using orthogonal L-paths.
+- **Footer / annotation elements** (training config panels, loss equations,
+  footnotes) are exempt — they sit below the flow and do not need to align to
+  any spine.
+
+**Inter-lane spacing and elements that span lanes**: when two horizontal lanes
+are stacked vertically, derive all y-positions from lane geometry — never set
+them by intuition or copy from an earlier figure. The required quantities are:
+
+```
+lane1_centre = lane1_y + lane1_height / 2
+lane2_centre = lane2_y + lane2_height / 2
+midpoint     = (lane1_centre + lane2_centre) / 2
+gap          = lane2_y - (lane1_y + lane1_height)   # must be > 0
+```
+
+Rules:
+- **Inter-lane gap**: target ~6–7mm native (renders to ~4mm at 0.606 scale).
+  If the gap is larger, shift the lower lane up until the gap is correct, then
+  update every y-coordinate in that lane and all elements connecting to it.
+- **Spanning elements** (e.g. a SMILES input box that feeds both lanes): centre
+  vertically at `midpoint`, so `box_y = midpoint - box_height / 2`. The fork
+  arrow origin should also sit at `midpoint`.
+- **Training config / footer panels**: place at `lane2_y + lane2_height + 3mm`
+  minimum clearance. Verify this explicitly after any lane repositioning —
+  do not assume the old y-position is still valid.
+- **ViewBox height**: after finalising all lane positions, set
+  `viewBox_height = (footer_bottom_y * scale) - transform_ty + 2mm_margin`.
+  Always recalculate rather than reusing a previous value.
 
 ---
 
@@ -552,6 +714,29 @@ inside branching trees (scale with visual weight of the branch).
 Sage-colored (`#888060`) for cached / precomputed data dependencies;
 gray (`#999999`) for standard flow. `stroke-dasharray="2 1.5"` is the
 preferred dash rhythm (matches hand-edited figures).
+
+### Fork and convergence arrows (orthogonal L-paths)
+
+When a single source splits into two parallel lanes, or two lanes converge
+to a single node, use orthogonal L-shaped paths (`H → V → H`) rather than
+cubic bezier curves. Four-point paths with `sodipodi:nodetypes="cccc"`:
+
+```svg
+<!-- Fork: source at (21,63) splitting up to y=49 and down to y=80 -->
+<path d="M 21,63 H 24 V 49 H 30"
+      stroke="#999999" stroke-width="0.5" fill="none"
+      marker-end="url(#Triangle)" sodipodi:nodetypes="cccc"/>
+<path d="M 21,63 H 24 V 80 H 30"
+      stroke="#999999" stroke-width="0.5" fill="none"
+      marker-end="url(#Triangle)" sodipodi:nodetypes="cccc"/>
+
+<!-- Convergence: two lanes arriving at concat, arrow reversed -->
+<path d="M 153,62 H 150 V 48 H 143"
+      stroke="#999999" stroke-width="0.5" fill="none"
+      marker-start="url(#marker342)" sodipodi:nodetypes="cccc"/>
+```
+
+Reserve cubic bezier (`C`) curves for single-path gentle bends only.
 
 ### Message-passing arrows (bidirectional, curved)
 
