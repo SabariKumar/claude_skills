@@ -130,7 +130,6 @@ Words are organized into three tiers based on how reliably they signal AI-genera
 | keen (as intensifier) | interested, eager, enthusiastic (or cut — just state the interest) |
 | symphony (metaphor) | (describe the actual coordination or combination) |
 | embrace (metaphor) | adopt, accept, use, switch to |
-| Concretely, / Concretely: | (omit — open directly with the specific example) |
 
 #### Tier 2 — Flag when 2+ appear in the same paragraph
 
@@ -479,3 +478,42 @@ Five principles for human-sounding rewrites:
 If the original writing is already strong, say so and make only the necessary cuts. Don't over-edit for the sake of it.
 
 The replacement table provides defaults, not mandates. If a flagged word is clearly the right choice in context, preserve it.
+
+---
+
+## Scientific and technical writing profile
+
+Use this profile for grant proposals, methods sections, and technical manuscripts. It overrides or supplements the `technical-blog` profile for academic scientific writing.
+
+### Core principle: mechanism before outcome
+
+Every claim about what a model, method, or system *achieves* must be preceded by a statement of *why* or *how* it achieves it. Stating the outcome first and gesturing at the mechanism is an AI pattern in scientific writing.
+
+- AI: "The multitask architecture improves performance by learning shared representations."
+- Human: "Training the two tasks simultaneously allows the shared encoder to develop representations that factor out folding and wetting contributions, enabling each output head to specialize."
+
+### Load-bearing conjunctions
+
+"While," "rather than," "whereas," and "rather than X independently" are logical operators, not transitions. Only use them when two things are genuinely being contrasted or traded off. Never use them for flow alone. If "while" opens a sentence where no real contrast exists, replace it with a period and a new sentence.
+
+### Noun-first technical objects
+
+Name technical objects as noun phrases before acting on them. Avoid gerund-heavy constructions that bury the object.
+
+- Avoid: "By conditioning the generative model using the pooled latent representation..."
+- Prefer: "The pooled latent representation from the encoder will be used as a conditioning vector for..."
+
+### Hedging is asymmetric
+
+Hedge design choices and experimental details that are genuinely undecided. Never hedge technical facts, architectural decisions already made, or benchmark comparisons. Uniform hedging across both categories is an AI tell in scientific prose.
+
+### Sentence-final elaboration
+
+Open sentences with subject and verb. Put elaboration, qualifications, and consequences at the end of the sentence, not the beginning.
+
+- Avoid: "In order to reduce the combinatorial search space during generation, attention weight masks will be applied..."
+- Prefer: "Attention weight masks will be applied to restrict mutations to high-impact positions, reducing the combinatorial search space during generation."
+
+### Parallel structure carries logical weight
+
+Use parallel constructions only when the parallelism reflects a genuine logical relationship: contrast, enumeration of truly parallel items, or paired conditions. Never use parallel structure for rhythm alone. One parallel construction per paragraph is a soft ceiling.
