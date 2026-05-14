@@ -9,7 +9,7 @@ metadata:
   tags: writing editing voice quality
   agentskills_spec: "1.0"
   openclaw:
-    emoji: "\u270D\uFE0F"
+    emoji: "✍️"
 ---
 
 # Avoid AI Writing — Audit & Rewrite
@@ -118,6 +118,7 @@ Words are organized into three tiers based on how reliably they signal AI-genera
 | at its core | (cut — just state the thing) |
 | synergy / synergies | (describe the actual combined effect) |
 | interplay | relationship, connection, interaction |
+| exactly (as intensifier) | cut — if the thing is precise, the sentence shows it; "exactly the problem" → "the problem" |
 | in order to | to |
 | due to the fact that | because |
 | serves as | is |
@@ -231,6 +232,19 @@ These slot-fill constructions signal that a sentence was generated, not written.
 - AI rotates synonyms to avoid repeating a word: "developers… engineers… practitioners… builders" in the same paragraph. Human writers repeat the clearest word.
 - If the same noun or verb appears three times in a paragraph and that's the right word, keep all three. Forced variation reads as thesaurus abuse.
 
+### Affected two-sentence contrast structure
+
+Splitting a contrast across two short sentences to manufacture rhythm is an AI tell in professional and scientific writing:
+
+- AI: "The ML side was tractable. What took real work was understanding undocumented assay formats."
+- Human: "While the ML side was tractable, the real challenge lay in understanding undocumented assay formats."
+
+The two-sentence version performs punchy variation but reads as colloquial and affected in formal prose. When two clauses are in genuine contrast, use a subordinating conjunction ("while," "although," "even though") to join them. Reserve short follow-on sentences for cases where the second clause is not a direct contrast but a consequence or elaboration — and even then, check whether a comma or semicolon would serve better.
+
+### Technical comparisons: tools vs. "state of the art"
+
+When describing a benchmark result or performance comparison, name the specific baselines rather than defaulting to "state of the art" or "existing methods." "Outperforms xTB and CREST by two orders of magnitude" signals domain fluency; "outperforms the state of the art by two orders of magnitude" does not. The exception is when writing for a genuinely non-specialist audience where the tool names would obscure rather than clarify.
+
 ### Vague attributions
 - "Experts believe," "Studies show," "Research suggests," "Industry leaders agree" — without naming the expert, study, or leader. Either cite a specific source or drop the attribution and state the claim directly.
 
@@ -240,6 +254,10 @@ These slot-fill constructions signal that a sentence was generated, not written.
   - "In terms of" → (rewrite)
   - "The reality is that" → (cut or just state the claim)
 - Note: "In order to," "Due to the fact that," and "At the end of the day" are covered in the word/phrase table and transition sections above — don't duplicate rules.
+
+### Cover letter closers: signal you've read the posting
+
+Generic closers ("I welcome any opportunity to discuss my background") are safe but forgettable. Where the job description includes specific language about the team's structure or mission (e.g., "founding team," "embedded in workflows," "scrappy"), echo that language precisely in the closing rather than softening to a generic invitation. "I'd like to talk about what this role needs from a technical founding member" does more work than "I welcome the opportunity to discuss how I can contribute." The risk of sounding presumptuous is lower than the risk of sounding like every other applicant.
 
 ### Generic conclusions
 - "The future looks bright," "Only time will tell," "One thing is certain," "As we move forward" — these are filler disguised as conclusions. Cut them. If the piece needs a closing thought, make it specific to the argument.
@@ -279,7 +297,9 @@ These slot-fill constructions signal that a sentence was generated, not written.
 - AI text treats established concepts as if the speaker invented or discovered them: "He introduced a term," "She coined the phrase," "a concept nobody's naming," "a failure mode nobody talks about." In reality, most ideas in a conversation are applications of existing concepts, not inventions.
 - Two problems. First, it's factually risky: if the concept already has a Wikipedia page or conference talks from last year, claiming novelty makes the writer look uninformed. Second, it flatters the subject in a way that reads as promotional rather than analytical.
 - The fix: describe what the person *did with* the concept, not that they discovered it. "Michel walked through how context poisoning works in practice" instead of "Michel introduced a term I hadn't heard before: context poisoning." If you're unsure whether something is novel, assume it isn't and frame accordingly.
-- Related patterns to flag: "the failure mode nobody's naming," "a problem nobody talks about," "the insight everyone's missing," "what nobody tells you about." These are engagement-bait framings that claim scarcity of knowledge where none exists.
+
+### Engagement bait
+- "The failure mode nobody's naming," "a problem nobody talks about," "the insight everyone's missing," "what nobody tells you about." These are engagement-bait framings that claim scarcity of knowledge where none exists.
 
 ### Emotional flatline
 - AI claims emotions as a structural crutch without conveying them through the writing: "What surprised me most," "I was fascinated to discover," "What struck me was," "I was excited to learn," "The most interesting part."
@@ -292,13 +312,13 @@ These slot-fill constructions signal that a sentence was generated, not written.
 - "While X is impressive, Y remains a challenge" or "Although X has made strides, Y is still an open question." AI uses this to sound balanced without actually weighing anything. Both halves are vague. Either make the concession specific (name what's impressive, name the actual challenge) or pick a side and argue it.
 
 ### Rhetorical question openers
-- "But what does this mean for developers?" / "So why should you care?" / "What's next?" � AI uses rhetorical questions to stall before the actual point. If you know the answer, just say it. Rhetorical questions are earned by strong setup, not dropped as section transitions.
+- "But what does this mean for developers?" / "So why should you care?" / "What's next?" — AI uses rhetorical questions to stall before the actual point. If you know the answer, just say it. Rhetorical questions are earned by strong setup, not dropped as section transitions.
 
 ### Parenthetical hedging
-- "(and, increasingly, Z)" / "(or, more precisely, Y)" / "(and perhaps more importantly, W)" � AI inserts parenthetical asides to sound nuanced without committing. If the aside matters, give it its own sentence. If it doesn't, cut it.
+- "(and, increasingly, Z)" / "(or, more precisely, Y)" / "(and perhaps more importantly, W)" — AI inserts parenthetical asides to sound nuanced without committing. If the aside matters, give it its own sentence. If it doesn't, cut it.
 
 ### Numbered list inflation
-- "Three key takeaways" / "Five things to know" / "Here are the top seven" � AI defaults to numbered lists because they're structurally safe. Only use numbered lists when the content genuinely has that many discrete, parallel items. If you're padding to hit a number, the list shouldn't exist.
+- "Three key takeaways" / "Five things to know" / "Here are the top seven" — AI defaults to numbered lists because they're structurally safe. Only use numbered lists when the content genuinely has that many discrete, parallel items. If you're padding to hit a number, the list shouldn't exist.
 
 ### Reasoning chain artifacts
 - "Let me think step by step," "Breaking this down," "To approach this systematically," "Step 1:," "Here's my thought process," "First, let's consider," "Working through this logically" — these are artifacts of chain-of-thought reasoning leaking into published prose. The reader doesn't need to see the scaffolding. State the conclusion, then the evidence.
@@ -345,13 +365,13 @@ If the text has 5+ flagged vocabulary hits across multiple categories, 3+ distin
 
 Not all AI-isms are equal. When doing a quick pass or triaging a large document, prioritize by tier:
 
-### P0 � Credibility killers (fix immediately)
+### P0 — Credibility killers (fix immediately)
 - Cutoff disclaimers ("As of my last update")
 - Chatbot artifacts ("I hope this helps!", "Great question!")
 - Vague attributions without sources ("Experts believe")
 - Significance inflation on routine events
 
-### P1 � Obvious AI smell (fix before publishing)
+### P1 — Obvious AI smell (fix before publishing)
 - Word-list violations (delve, leverage, harness, robust, etc.)
 - Template phrases and slot-fill constructions
 - "Let's" transition openers
@@ -360,7 +380,7 @@ Not all AI-isms are equal. When doing a quick pass or triaging a large document,
 - Bold overuse
 - Em dash frequency (above 1 per 1,000 words)
 
-### P2 � Stylistic polish (fix when time allows)
+### P2 — Stylistic polish (fix when time allows)
 - Generic conclusions ("The future looks bright")
 - Compulsive rule of three
 - Uniform paragraph length
@@ -383,12 +403,12 @@ Pass an optional context hint to adjust rule strictness. If no context is specif
 
 ### Profile definitions
 
-**`linkedin`** � Short-form social. Punchy fragments, visual formatting matter.
-**`blog`** � Default. Standard long-form prose. All rules apply at full strength.
-**`technical-blog`** � Long-form with code, architecture, APIs. Technical terms get a pass.
-**`investor-email`** � High-trust audience. Tighten everything; promotional language is the biggest risk.
-**`docs`** � Documentation, READMEs, guides. Clarity over voice.
-**`casual`** � Slack messages, internal notes, quick replies. Only catch the worst offenders.
+**`linkedin`** — Short-form social. Punchy fragments, visual formatting matter.
+**`blog`** — Default. Standard long-form prose. All rules apply at full strength.
+**`technical-blog`** — Long-form with code, architecture, APIs. Technical terms get a pass.
+**`investor-email`** — High-trust audience. Tighten everything; promotional language is the biggest risk.
+**`docs`** — Documentation, READMEs, guides. Clarity over voice.
+**`casual`** — Slack messages, internal notes, quick replies. Only catch the worst offenders.
 
 ### Tolerance matrix
 
@@ -427,7 +447,7 @@ When no context is specified, infer from these signals:
 | Code blocks, API references, or technical architecture | `technical-blog` |
 | Salutation ("Hi [name]", "Dear") + investor/fundraising language | `investor-email` |
 | Step-by-step instructions, parameter docs, README structure | `docs` |
-| No strong signals | `blog` (safest default � all rules apply) |
+| No strong signals | `blog` (safest default — all rules apply) |
 
 If auto-detection feels wrong, say which profile you're using and why. The user can override.
 
