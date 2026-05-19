@@ -127,18 +127,23 @@ Every plan opens with this scaffolding:
    - A short description of what the Step does and why.
    - Implementation outline — bullet points, not prose. Reference the files / functions / classes that will change.
    - **Test invariants** the Step needs to preserve or establish. List them before implementing, not after.
-   - **Outcome.** Filled in only when the Step lands. Records what actually shipped, divergences from the outline (and why), test counts (`All N tests pass (was N-k; +k new)`), and any architectural decisions surfaced during implementation. Future-you reads this section to remember *why* the code looks the way it does.
-6. **Findings** sections — one per major benchmark or experiment, **dated** (`### Findings 2026-05-05`). Capture: what was run, headline numbers, what we expected vs what we got, the next decisions that fall out. Findings are append-only; never edit a past Findings entry — date a new one if interpretations change.
+   - **Outcome (YYYYMMDD).** Filled in only when the Step lands. Records what actually shipped, divergences from the outline (and why), test counts (`All N tests pass (was N-k; +k new)`), and any architectural decisions surfaced during implementation. Future-you reads this section to remember *why* the code looks the way it does.
+6. **Findings** sections — one per major benchmark or experiment, **dated** (`### Findings 20260505`). Capture: what was run, headline numbers, what we expected vs what we got, the next decisions that fall out. Findings are append-only; never edit a past Findings entry — date a new one if interpretations change.
 7. **Risks to instrument from day one** — a list of failure modes the work might hit. For each: how it would manifest, what diagnostic to add upfront, what mitigation is in reserve. Forces the team to write the diagnostic before the failure surprises them.
-8. **Deferred follow-ups** — open items with explicit **trigger conditions**. "Replace metric X with Y" by itself is bookkeeping; "Replace metric X with Y if next benchmark shows Z" is decision-ready when the trigger fires.
-9. **Lever menus** — when there's a thicket of orthogonal hyperparameters or design choices the team might pull on (e.g. "things to try if basin coverage is too low"), enumerate them once with rough cost / impact estimates instead of re-deriving the list every meeting. Mark the priority subset (`★`) so the next person knows where to start.
+8. **Deferred follow-ups** — open items with explicit **trigger conditions**, each prefixed with the date added (`- (20260505) Replace metric X with Y if next benchmark shows Z`). "Replace metric X with Y" by itself is bookkeeping; the trigger condition makes it decision-ready when it fires.
+9. **Lever menus** — when there's a thicket of orthogonal hyperparameters or design choices the team might pull on (e.g. "things to try if basin coverage is too low"), enumerate them once with rough cost / impact estimates instead of re-deriving the list every meeting. Mark the priority subset (`★`) so the next person knows where to start. Each entry is prefixed with the date added (`- (20260505) ★ Try lower learning rate ...`).
 
 ## Daily-work hygiene
 
 - **Update the plan after every Step lands**, in the same session. Don't batch updates across sessions — by next session you've forgotten the load-bearing detail and the Outcome note becomes generic.
 - **Mark Steps complete with `✓` in the progress table AND in the section heading** (`### Step 11: Kabsch RMSD dedup — ✓ complete`). The two should never disagree; if they do, the table is wrong.
 - **When a Step's implementation diverges from the plan, update the Step section first, then implement.** Don't let the plan and the code drift: the plan's job is to be readable when the code is opaque.
-- **Date every Findings entry** with the absolute date (`2026-05-05`), not relative ("yesterday"). Makes the plan readable a year later.
+- **Datestamp every addition to the plan** in `YYYYMMDD` format — not relative ("yesterday"), not `YYYY-MM-DD`. The stamp goes where natural for each element:
+  - Step added mid-project: `### Step 12 (added 20260519): ...`
+  - Step outcome: `**Outcome (20260519).**`
+  - Findings heading: `### Findings 20260519`
+  - Deferred follow-up: `- (20260519) Replace metric X with Y if ...`
+  - Lever menu entry: `- (20260519) ★ Try lower learning rate ...`
 - **Append-only for Findings.** A new finding that contradicts an old one gets a new dated entry; don't rewrite history. The contradiction is itself a finding.
 - **Capture cross-project dependencies** when they surface. If the work breaks an assumption another project relies on (e.g. a downstream training pipeline), record it in the plan AND update the affected project's memory or plan in the same session.
 
