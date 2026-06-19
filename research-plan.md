@@ -107,6 +107,17 @@ Architecture diagrams typically belong in `docs/` (alongside the plan they suppo
 
 Numerical paper figures (boxplots, heatmaps, learning curves) use matplotlib and live in `scripts/<figure_name>.py` per the *Paper figures* section below. Don't conflate the two: matplotlib for data, `svg-scientific-style` for concepts.
 
+### 3D molecular figures
+
+For any ray-traced image of a molecule or molecular complex — ball-and-stick renders, NCI isosurfaces, binding site grid boxes, MO / spin density plots — **invoke the `pymol-render` skill**. That skill encodes the BallnStick rendering workflow built on Sabari's custom pymolrc and pymol_style.py, including global render settings, Bondi VDW radii, colour conventions, and worked examples for `drawgridbox` and `nci`.
+
+Key rules:
+- **Always use `BallnStick`** as the representation step for standard renders — never raw `show sticks` + `show spheres`.
+- **Draft a figure spec in the plan** (what molecule, what view, what annotation if any) before writing the render script, the same way numerical figures are specced before their matplotlib script.
+- **Render scripts live in `scripts/<figure_name>_pymol.py`** and are separate from data-generating pipeline code. They read a structure file (XYZ, PDB, SDF) and write a PNG.
+- **Default resolution**: `ray(2400, 2400)`, `dpi=300` for publication; `ray(1600, 1600)`, `dpi=150` for slides.
+- The pymolrc must be loaded before any `BallnStick` or other pymolrc-defined command is called. Place it at `~/.pymolrc` or `run` it explicitly at the top of every render script.
+
 ---
 
 ## The rolling plan file
@@ -154,6 +165,7 @@ Every plan opens with this scaffolding:
 - **SVG is the default save format.** Optional PDF / PNG via `--out_pdf` / `--out_png` flags.
 - **One panel per function.** Layout tweaks (figure size, spacing, font) live in `main`; per-panel data prep + plotting lives in `_panel_a / _b / _c` so any panel can be re-rendered or extracted in isolation.
 - For *concept* diagrams (architectures, pipelines, flowcharts), invoke the `svg-scientific-style` skill instead of matplotlib. See *Architecture diagrams* under foundational defaults.
+- For *3D molecular figures* (ball-and-stick renders, NCI surfaces, binding site views), invoke the `pymol-render` skill instead of matplotlib. See *3D molecular figures* under foundational defaults.
 
 ## Scripts and reproducibility
 
@@ -171,4 +183,3 @@ Every plan opens with this scaffolding:
 - **Do not let lever menus become checklists.** Levers are the menu of options when something doesn't work; they're not a list of things to do in order. The priority `★` subset is the recommendation; the rest is decision-ready inventory.
 - **Do not run state-modifying git commands.** The user owns git state; you handle file edits.
 - **Do not skip the issue summary before a major feature.** "I'll write it later after we agree on the approach" loses the framing the issue is meant to capture. The issue summary IS the agreement on the approach.
-
